@@ -3,64 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FMHL - Ntrix Master List</title>
+    <title>NTRIX - Master Host Index</title>
     <style>
         :root { --accent: #55efc4; --bg: #0f0f0f; --card: #1e1e1e; --text: #e0e0e0; }
         body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 30px; margin-bottom: 30px; }
+        header { text-align: center; padding: 40px 20px; }
         .ntrix-brand { color: var(--accent); font-size: 4rem; font-weight: 900; margin: 0; letter-spacing: -2px; }
         
-        /* Search & Filters */
-        .search-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
-        input { background: #000; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; width: 250px; font-size: 1rem; }
-        input:focus { border-color: var(--accent); outline: none; }
+        /* Sorting Controls */
+        .sort-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
+        .sort-btn { 
+            background: #222; border: 1px solid #444; color: white; padding: 10px 20px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .sort-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
 
-        /* Grid System */
+        /* Grid */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .host-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; transition: 0.2s; position: relative; }
-        .host-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-        .host-card h3 { margin: 0 0 15px 0; color: #fff; font-size: 1.5rem; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .spec { display: flex; justify-content: space-between; margin: 8px 0; font-size: 0.95rem; }
-        .spec label { color: #888; }
-        .cpu-tag { display: block; margin-top: 15px; padding: 6px; background: #222; color: var(--accent); font-size: 0.8rem; border-radius: 5px; text-align: center; border: 1px solid #333; font-weight: bold; }
-
-        /* Admin & Modal */
-        .admin-btn { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
-        .modal-content { background: var(--card); width: 350px; margin: 50px auto; padding: 30px; border-radius: 15px; border: 1px solid var(--accent); }
+        .host-card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; }
+        .host-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .host-card h3 { margin: 0 0 15px 0; font-size: 1.5rem; color: #fff; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .spec { display: flex; justify-content: space-between; margin: 10px 0; }
+        .spec label { color: #888; font-size: 0.9rem; }
+        .cpu-tag { 
+            display: block; margin-top: 15px; padding: 8px; background: rgba(85, 239, 196, 0.1); 
+            color: var(--accent); font-size: 0.85rem; border-radius: 6px; text-align: center; 
+            font-weight: bold; border: 1px solid rgba(85, 239, 196, 0.2); 
+        }
     </style>
 </head>
 <body>
 
 <header>
     <h1 class="ntrix-brand">NTRIX</h1>
-    <p>The Complete FMHL Index | Updated Jan 2026</p>
-    <button class="admin-btn" onclick="checkAdmin()">+ ADD NEW HOST</button>
+    <p>Manual High-Performance Hosting Index</p>
 </header>
 
-<div class="search-container">
-    <input type="text" id="searchName" placeholder="Search by name..." onkeyup="filter()">
-    <input type="number" id="searchRam" placeholder="Min RAM (GB)..." onkeyup="filter()">
+<div class="sort-container">
+    <button class="sort-btn" onclick="sortData('ram')">Sort by RAM (Highest)</button>
+    <button class="sort-btn" onclick="sortData('cpu')">Sort by CPU (A-Z)</button>
+    <button class="sort-btn" onclick="sortData('name')">Sort by Name</button>
 </div>
 
 <div id="host-list" class="grid"></div>
 
-<div id="admin-modal" class="modal">
-    <div class="modal-content">
-        <h2 style="color:var(--accent)">Add Service</h2>
-        <input type="text" id="addName" placeholder="Host Name" style="width:100%; margin-bottom:10px;">
-        <input type="text" id="addRam" placeholder="RAM (GB)" style="width:100%; margin-bottom:10px;">
-        <input type="text" id="addCpu" placeholder="CPU TYPE PLACE HOLDER" style="width:100%; margin-bottom:10px;">
-        <input type="text" id="addStorage" placeholder="Storage (GB)" style="width:100%; margin-bottom:10px;">
-        <button class="admin-btn" style="width:100%" onclick="saveHost()">SAVE HOST</button>
-        <button onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer;">CANCEL</button>
-    </div>
-</div>
-
 <script>
-const ADMIN_CODE = "Ntrix2026";
-
-// ALL 40 HOSTS INCLUDED
+// ADD YOUR HOSTS HERE MANUALLY
 const masterList = [
     { name: "MineStrator", ram: 4, storage: "8 GB", cpu: "AMD EPYC 9354p" },
     { name: "Eternal Zero", ram: 6, storage: "20 GB", cpu: "AMD Ryzen 9 Series" },
@@ -77,7 +66,7 @@ const masterList = [
     { name: "CloudCode", ram: 6, storage: "20 GB", cpu: "Ryzen 9" },
     { name: "HidenCloud", ram: 3, storage: "15 GB", cpu: "Intel Xeon / EPYC" },
     { name: "IceHost", ram: 4, storage: "10 GB", cpu: "AMD Ryzen" },
-    { name: "OuiHeberg", ram: 8, storage: "2 GB", cpu: "Intel Xeon (Marseille)" },
+    { name: "OuiHeberg", ram: 8, storage: "2 GB", cpu: "Intel Xeon" },
     { name: "FreemcHosting", ram: 4, storage: "15 GB", cpu: "AMD Ryzen" },
     { name: "MCServerHost", ram: 3, storage: "10 GB", cpu: "Intel Multi-Core" },
     { name: "Minexnodes", ram: 2, storage: "10 GB", cpu: "Standard CPU" },
@@ -100,55 +89,40 @@ const masterList = [
     { name: "Nodebyte", ram: 2, storage: "3+ GB", cpu: "Standard Node" },
     { name: "Rustix", ram: 2, storage: "10 GB", cpu: "Intel Xeon" },
     { name: "Spaceify", ram: 2, storage: "5+ GB", cpu: "Shared CPU" },
-    { name: "Play Hosting", ram: 3, storage: "10 GB", cpu: "Ryzen CPUs" },
-    { name: "Minehut", ram: 1, storage: "Unlimited", cpu: "i9-14900K" }
+    { name: "Play Hosting", ram: 3, storage: "10 GB", cpu: "Ryzen 7800X3D" },
+    { name: "Minehut", ram: 1, storage: "Unlimited", cpu: "Intel i9-14900K" }
 ];
-
-function getAll() {
-    const custom = JSON.parse(localStorage.getItem("ntrix_db")) || [];
-    return [...masterList, ...custom];
-}
 
 function render(data) {
     const list = document.getElementById("host-list");
     list.innerHTML = data.map(h => `
         <div class="host-card">
             <h3>${h.name}</h3>
-            <div class="spec"><label>RAM:</label> <span>${h.ram} GB</span></div>
-            <div class="spec"><label>Storage:</label> <span>${h.storage}</span></div>
+            <div class="spec"><label>RAM</label><span>${h.ram} GB</span></div>
+            <div class="spec"><label>Storage</label><span>${h.storage}</span></div>
             <span class="cpu-tag">${h.cpu}</span>
         </div>
     `).join('');
 }
 
-function filter() {
-    const n = document.getElementById("searchName").value.toLowerCase();
-    const r = parseFloat(document.getElementById("searchRam").value) || 0;
-    const filtered = getAll().filter(h => h.name.toLowerCase().includes(n) && h.ram >= r);
-    render(filtered);
+function sortData(criteria) {
+    let sorted = [...masterList];
+    if (criteria === 'ram') {
+        sorted.sort((a, b) => b.ram - a.ram);
+    } else if (criteria === 'cpu') {
+        sorted.sort((a, b) => a.cpu.localeCompare(b.cpu));
+    } else {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    render(sorted);
+    
+    // UI active state
+    document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
 }
 
-function checkAdmin() {
-    if (prompt("Admin Code:") === ADMIN_CODE) document.getElementById("admin-modal").style.display = "block";
-}
-
-function closeModal() { document.getElementById("admin-modal").style.display = "none"; }
-
-function saveHost() {
-    const host = {
-        name: document.getElementById("addName").value,
-        ram: parseFloat(document.getElementById("addRam").value),
-        cpu: document.getElementById("addCpu").value,
-        storage: document.getElementById("addStorage").value + " GB"
-    };
-    const custom = JSON.parse(localStorage.getItem("ntrix_db")) || [];
-    custom.push(host);
-    localStorage.setItem("ntrix_db", JSON.stringify(custom));
-    closeModal();
-    render(getAll());
-}
-
-window.onload = () => render(getAll());
+// Initial load sorted by Name
+window.onload = () => sortData('name');
 </script>
 </body>
 </html>
