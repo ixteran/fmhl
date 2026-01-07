@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FMHL - Ntrix Master List</title>
+    <style>
+        :root { --accent: #55efc4; --bg: #0f0f0f; --card: #1e1e1e; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 30px; margin-bottom: 30px; }
+        .ntrix-brand { color: var(--accent); font-size: 4rem; font-weight: 900; margin: 0; letter-spacing: -2px; }
+        
+        /* Search & Filters */
+        .search-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        input { background: #000; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; width: 250px; font-size: 1rem; }
+        input:focus { border-color: var(--accent); outline: none; }
+
+        /* Grid System */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .host-card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; transition: 0.2s; position: relative; }
+        .host-card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
+        .host-card h3 { margin: 0 0 15px 0; color: #fff; font-size: 1.5rem; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        .spec { display: flex; justify-content: space-between; margin: 8px 0; font-size: 0.95rem; }
+        .spec label { color: #888; }
+        .cpu-tag { display: block; margin-top: 15px; padding: 6px; background: #222; color: var(--accent); font-size: 0.8rem; border-radius: 5px; text-align: center; border: 1px solid #333; font-weight: bold; }
+
+        /* Admin & Modal */
+        .admin-btn { background: var(--accent); color: #000; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; }
+        .modal-content { background: var(--card); width: 350px; margin: 50px auto; padding: 30px; border-radius: 15px; border: 1px solid var(--accent); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1 class="ntrix-brand">NTRIX</h1>
+    <p>The Complete FMHL Index | Updated Jan 2026</p>
+    <button class="admin-btn" onclick="checkAdmin()">+ ADD NEW HOST</button>
+</header>
+
+<div class="search-container">
+    <input type="text" id="searchName" placeholder="Search by name..." onkeyup="filter()">
+    <input type="number" id="searchRam" placeholder="Min RAM (GB)..." onkeyup="filter()">
+</div>
+
+<div id="host-list" class="grid"></div>
+
+<div id="admin-modal" class="modal">
+    <div class="modal-content">
+        <h2 style="color:var(--accent)">Add Service</h2>
+        <input type="text" id="addName" placeholder="Host Name" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="addRam" placeholder="RAM (GB)" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="addCpu" placeholder="CPU TYPE PLACE HOLDER" style="width:100%; margin-bottom:10px;">
+        <input type="text" id="addStorage" placeholder="Storage (GB)" style="width:100%; margin-bottom:10px;">
+        <button class="admin-btn" style="width:100%" onclick="saveHost()">SAVE HOST</button>
+        <button onclick="closeModal()" style="background:none; border:none; color:gray; width:100%; margin-top:10px; cursor:pointer;">CANCEL</button>
+    </div>
+</div>
+
+<script>
+const ADMIN_CODE = "Ntrix2026";
+
+// ALL 40 HOSTS INCLUDED
+const masterList = [
+    { name: "MineStrator", ram: 4, storage: "8 GB", cpu: "AMD EPYC 9354p" },
+    { name: "Eternal Zero", ram: 6, storage: "20 GB", cpu: "AMD Ryzen 9 Series" },
+    { name: "FalixNodes", ram: 4, storage: "10 GB", cpu: "Ryzen 9 9950X3D" },
+    { name: "Hosting Mit Herz", ram: 3, storage: "5 GB", cpu: "Intel Xeon Gold" },
+    { name: "VibeGames", ram: 4, storage: "20 GB", cpu: "Ryzen 9 7900" },
+    { name: "DracoByte", ram: 4, storage: "10 GB", cpu: "Intel Xeon" },
+    { name: "Freezehost", ram: 2.1, storage: "10+ GB", cpu: "Xeon E-2288G" },
+    { name: "Gameserver.gratis", ram: 3.1, storage: "10 GB", cpu: "Intel i9-13900K" },
+    { name: "Host2Play", ram: 3, storage: "2 GB", cpu: "i9-10920X" },
+    { name: "MagmaNode", ram: 2.5, storage: "5 GB", cpu: "Ryzen 9 7950X3D" },
+    { name: "Minekeep", ram: 1, storage: "10 GB", cpu: "Standard Cloud" },
+    { name: "Tick Hosting", ram: 8, storage: "15 GB", cpu: "AMD EPYC 9004" },
+    { name: "CloudCode", ram: 6, storage: "20 GB", cpu: "Ryzen 9" },
+    { name: "HidenCloud", ram: 3, storage: "15 GB", cpu: "Intel Xeon / EPYC" },
+    { name: "IceHost", ram: 4, storage: "10 GB", cpu: "AMD Ryzen" },
+    { name: "OuiHeberg", ram: 8, storage: "2 GB", cpu: "Intel Xeon (Marseille)" },
+    { name: "FreemcHosting", ram: 4, storage: "15 GB", cpu: "AMD Ryzen" },
+    { name: "MCServerHost", ram: 3, storage: "10 GB", cpu: "Intel Multi-Core" },
+    { name: "Minexnodes", ram: 2, storage: "10 GB", cpu: "Standard CPU" },
+    { name: "Embotic", ram: 4, storage: "5 GB", cpu: "Intel Xeon" },
+    { name: "Seedloaf", ram: 4, storage: "6 GB", cpu: "North America Node" },
+    { name: "HyperHub", ram: 2, storage: "10+ GB", cpu: "Standard Node" },
+    { name: "ElementiaMC", ram: 2, storage: "5+ GB", cpu: "Shared CPU" },
+    { name: "Free MC Server", ram: 1.7, storage: "10 GB", cpu: "Ryzen 7 PRO" },
+    { name: "AxentHost", ram: 2, storage: "5+ GB", cpu: "DDR5 Standard" },
+    { name: "XServer GAMEs", ram: 4, storage: "5 GB", cpu: "Intel Core" },
+    { name: "Aternos", ram: 2.5, storage: "4+ GB", cpu: "Custom Cloud" },
+    { name: "Github Codespaces", ram: 16, storage: "32 GB", cpu: "Azure Standard" },
+    { name: "Google Cloud", ram: 8, storage: "10 GB", cpu: "E2-Standard" },
+    { name: "BerrryHost", ram: 4, storage: "10 GB", cpu: "Standard Node" },
+    { name: "EpicHost", ram: 3, storage: "5 GB", cpu: "Intel Xeon" },
+    { name: "FreeGameHost", ram: 4, storage: "6 GB", cpu: "Standard Node" },
+    { name: "Gaming4Free", ram: 2, storage: "5 GB", cpu: "Shared CPU" },
+    { name: "Colab", ram: 12, storage: "100 GB", cpu: "Tesla T4 Virtual" },
+    { name: "my-mc.link", ram: 6, storage: "Unlimited", cpu: "Standard Node" },
+    { name: "Nodebyte", ram: 2, storage: "3+ GB", cpu: "Standard Node" },
+    { name: "Rustix", ram: 2, storage: "10 GB", cpu: "Intel Xeon" },
+    { name: "Spaceify", ram: 2, storage: "5+ GB", cpu: "Shared CPU" },
+    { name: "Play Hosting", ram: 3, storage: "10 GB", cpu: "Ryzen CPUs" },
+    { name: "Minehut", ram: 1, storage: "Unlimited", cpu: "i9-14900K" }
+];
+
+function getAll() {
+    const custom = JSON.parse(localStorage.getItem("ntrix_db")) || [];
+    return [...masterList, ...custom];
+}
+
+function render(data) {
+    const list = document.getElementById("host-list");
+    list.innerHTML = data.map(h => `
+        <div class="host-card">
+            <h3>${h.name}</h3>
+            <div class="spec"><label>RAM:</label> <span>${h.ram} GB</span></div>
+            <div class="spec"><label>Storage:</label> <span>${h.storage}</span></div>
+            <span class="cpu-tag">${h.cpu}</span>
+        </div>
+    `).join('');
+}
+
+function filter() {
+    const n = document.getElementById("searchName").value.toLowerCase();
+    const r = parseFloat(document.getElementById("searchRam").value) || 0;
+    const filtered = getAll().filter(h => h.name.toLowerCase().includes(n) && h.ram >= r);
+    render(filtered);
+}
+
+function checkAdmin() {
+    if (prompt("Admin Code:") === ADMIN_CODE) document.getElementById("admin-modal").style.display = "block";
+}
+
+function closeModal() { document.getElementById("admin-modal").style.display = "none"; }
+
+function saveHost() {
+    const host = {
+        name: document.getElementById("addName").value,
+        ram: parseFloat(document.getElementById("addRam").value),
+        cpu: document.getElementById("addCpu").value,
+        storage: document.getElementById("addStorage").value + " GB"
+    };
+    const custom = JSON.parse(localStorage.getItem("ntrix_db")) || [];
+    custom.push(host);
+    localStorage.setItem("ntrix_db", JSON.stringify(custom));
+    closeModal();
+    render(getAll());
+}
+
+window.onload = () => render(getAll());
+</script>
+</body>
+</html>
