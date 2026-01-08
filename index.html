@@ -4,104 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NTRXI - MC Hosting List</title>
+    <style>
+        :root { --accent: #55efc4; --bg: #0f0f0f; --card: #1e1e1e; --text: #e0e0e0; }
+        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
+        header { text-align: center; padding: 40px 20px; }
+        
+        /* BRANDING UPDATES */
+        .ntrxi-brand { 
+            color: var(--accent); 
+            font-size: 4rem; 
+            font-weight: 900; 
+            margin: 0; 
+            letter-spacing: -2px;
+            display: inline-block;
+            transition: all 0.4s ease-in-out; 
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        /* Subtler glow as requested */
+        .ntrxi-brand:hover {
+            transform: scale(1.05);
+            text-shadow: 0 0 8px rgba(85, 239, 196, 0.5), 0 0 15px rgba(85, 239, 196, 0.3);
+        }
+
+        .discord-btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            background-color: #5865F2; color: white; padding: 12px 24px;
+            border-radius: 8px; text-decoration: none; font-weight: 600;
+            transition: 0.3s; margin-top: 15px;
+        }
+        .discord-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
+
+        /* CONTROLS */
+        .controls-wrapper { max-width: 1000px; margin: 0 auto 40px; text-align: center; }
+        .control-group { margin-bottom: 20px; }
+        .label-text { display: block; margin-bottom: 10px; color: #888; font-size: 0.8rem; text-transform: uppercase; }
+        
+        .sort-container { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .sort-btn { 
+            background: #222; border: 1px solid #444; color: white; padding: 10px 18px; 
+            border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
+        }
+        .sort-btn:hover { border-color: var(--accent); }
+        .sort-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
+
+        /* GRID */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .host-card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; position: relative; }
+        .host-card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .host-card h3 { margin: 0 0 15px 0; font-size: 1.3rem; color: #fff; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        
+        .spec { display: flex; justify-content: space-between; margin: 8px 0; }
+        .spec label { color: #888; font-size: 0.85rem; }
+        .cpu-tag { 
+            display: block; margin-top: 15px; padding: 8px; background: rgba(85, 239, 196, 0.05); 
+            color: var(--accent); font-size: 0.75rem; border-radius: 6px; text-align: center; 
+            border: 1px solid rgba(85, 239, 196, 0.1); 
+        }
+        .category-badge {
+            position: absolute; top: 15px; right: 15px; font-size: 0.65rem;
+            padding: 4px 8px; border-radius: 4px; background: #333; color: #aaa;
+        }
+    </style>
 </head>
 <body>
 
 <header>
-    <h1 class="ntrix-brand">NTRXI</h1>
-    <p>Free Hosting Index</p>
-    <a href="https://discord.com/invite/b67X2Gdkw7" target="_blank" class="discord-btn">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-        <path d="M13.545 2.907a13.2 13.2 0 0 0-3.257-1.011.05.05 0 0 0-.052.025c-.141.25-.297.577-.406.833a12.2 12.2 0 0 0-3.658 0 8 8 0 0 0-.412-.833.05.05 0 0 0-.052-.025c-1.125.194-2.22.534-3.257 1.011a.04.04 0 0 0-.021.018C.356 6.024-.213 9.047.066 12.032q.003.022.021.037a13.3 13.3 0 0 0 3.995 2.02.05.05 0 0 0 .056-.025c.308-.42.582-.863.818-1.329a.05.05 0 0 0-.027-.07 9 9 0 0 1-1.248-.595.05.05 0 0 1-.005-.085q.084-.063.166-.13a.05.05 0 0 1 .051-.007c2.634 1.208 5.486 1.208 8.09 0a.05.05 0 0 1 .051.007q.082.067.166.13a.05.05 0 0 1-.005.085 9 9 0 0 1-1.248.595.05.05 0 0 0-.027.07c.236.466.51.91.817 1.329a.05.05 0 0 0 .056.025 13.3 13.3 0 0 0 4.001-2.02.05.05 0 0 0 .021-.037c.334-3.451-.559-6.449-2.366-9.106a.03.03 0 0 0-.02-.019m-8.198 7.307c-.789 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.45.724 1.438 1.613 0 .888-.637 1.612-1.438 1.612m5.316 0c-.788 0-1.438-.724-1.438-1.612s.637-1.613 1.438-1.613c.807 0 1.451.724 1.438 1.613 0 .888-.631 1.612-1.438 1.612"/>
-    </svg>
-    Join Discord</a>
-<style>
-        :root { --accent: #55efc4; --bg: #0f0f0f; --card: #1e1e1e; --text: #e0e0e0; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        header { text-align: center; padding: 40px 20px; }
-        .ntrix-brand { color: var(--accent); font-size: 4rem; font-weight: 900; margin: 0; letter-spacing: -2px; }
-        
-        /* Sorting Controls */
-        .sort-container { display: flex; justify-content: center; gap: 15px; margin-bottom: 40px; }
-        .sort-btn { 
-            background: #222; border: 1px solid #444; color: white; padding: 10px 20px; 
-            border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s;
-        }
-        .sort-btn:hover { border-color: var(--accent); color: var(--accent); }
-        .sort-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
-
-        /* Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .host-card { background: var(--card); padding: 25px; border-radius: 15px; border: 1px solid #333; transition: 0.3s; }
-        .host-card:hover { border-color: var(--accent); transform: translateY(-5px); }
-        .host-card h3 { margin: 0 0 15px 0; font-size: 1.5rem; color: #fff; border-bottom: 1px solid #222; padding-bottom: 10px; }
-        .spec { display: flex; justify-content: space-between; margin: 10px 0; }
-        .spec label { color: #888; font-size: 0.9rem; }
-        .cpu-tag { 
-            display: block; margin-top: 15px; padding: 8px; background: rgba(85, 239, 196, 0.1); 
-            color: var(--accent); font-size: 0.85rem; border-radius: 6px; text-align: center; 
-            font-weight: bold; border: 1px solid rgba(85, 239, 196, 0.2); 
-        }
-.ntrix-brand {
-    color: var(--accent);
-    font-size: 4rem;
-    font-weight: 900;
-    margin: 0;
-    letter-spacing: -2px;
-    
-    /* ADD THESE FOR SMOOTHNESS */
-    display: inline-block; /* Required for transform to work */
-    transition: all 0.4s ease-in-out; 
-    cursor: pointer;
-}
-
-/* THE HOVER EFFECT */
-.ntrix-brand:hover {
-    transform: scale(1.1); /* Enlarges by 10% */
-    
-    /* This creates the layered glow effect */
-    text-shadow: 
-        0 0 10px var(--accent),
-        0 0 20px var(--accent),
-        0 0 40px rgba(85, 239, 196, 0.6);
-}
-    
-.discord-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #5865F2; /* Official Discord Blurple */
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    font-family: 'Segoe UI', sans-serif;
-    transition: background-color 0.3s, transform 0.2s;
-}
-
-.discord-btn:hover {
-    background-color: #4752C4; /* Darker shade on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
-}
-
-.discord-btn svg {
-    filter: drop-shadow(0 0 2px rgba(0,0,0,0.2));
-}
-</style>
+    <h1 class="ntrxi-brand">NTRXI</h1>
+    <p>Ultimate Free Hosting & Self-Host Index</p>
+    <a href="https://discord.com/invite/b67X2Gdkw7" target="_blank" class="discord-btn">Join Discord</a>
 </header>
 
-<div class="sort-container">
-    <button class="sort-btn" onclick="sortData('ram')">Sort by RAM (Highest)</button>
-    <button class="sort-btn" onclick="sortData('cpu')">Sort by CPU (A-Z)</button>
-    <button class="sort-btn" onclick="sortData('name')">Sort by Name</button>
+<div class="controls-wrapper">
+    <div class="control-group">
+        <span class="label-text">Filter Category</span>
+        <div class="sort-container">
+            <button class="sort-btn active" onclick="filterType('all')">All Types</button>
+            <button class="sort-btn" onclick="filterType('web')">Web Hosting</button>
+            <button class="sort-btn" onclick="filterType('self')">Self-Hosting Mods</button>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <span class="label-text">Sort RAM & Performance</span>
+        <div class="sort-container">
+            <button class="sort-btn" onclick="sortData('ram-desc')">RAM (High to Low)</button>
+            <button class="sort-btn" onclick="sortData('ram-asc')">RAM (Low to High)</button>
+            <button class="sort-btn" onclick="sortData('name')">Alphabetical (A-Z)</button>
+        </div>
+    </div>
 </div>
 
 <div id="host-list" class="grid"></div>
 
 <script>
-// ADD YOUR HOSTS HERE MANUALLY
 const masterList = [
     // --- 2026 HIGH-PERFORMANCE (Ryzen 9 / EPYC) ---
     { name: "FalixNodes", ram: 4.0, storage: "10 GB", cpu: "AMD Ryzen 9 9950X3D", power: 5 },
@@ -191,36 +187,50 @@ const masterList = [
     { name: "Hamachi (SELF HOSTING TOOL)", ram: "Medium", storage: "N/A", cpu: "Virtual LAN", power: 2 }
 ];
 
+let currentFilter = 'all';
+
 function render(data) {
     const list = document.getElementById("host-list");
-    list.innerHTML = data.map(h => `
+    list.innerHTML = data
+        .filter(h => currentFilter === 'all' || h.type === currentFilter)
+        .map(h => `
         <div class="host-card">
+            <span class="category-badge">${h.type === 'web' ? 'WEB' : 'MOD'}</span>
             <h3>${h.name}</h3>
-            <div class="spec"><label>RAM</label><span>${h.ram} GB</span></div>
+            <div class="spec"><label>RAM</label><span>${h.displayRam ? h.displayRam : h.ram + ' GB'}</span></div>
             <div class="spec"><label>Storage</label><span>${h.storage}</span></div>
             <span class="cpu-tag">${h.cpu}</span>
         </div>
     `).join('');
 }
 
-function sortData(criteria) {
-    let sorted = [...masterList];
-    if (criteria === 'ram') {
-        sorted.sort((a, b) => b.ram - a.ram);
-    } else if (criteria === 'cpu') {
-        sorted.sort((a, b) => a.cpu.localeCompare(b.cpu));
-    } else {
-        sorted.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    render(sorted);
-    
-    // UI active state
-    document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+function filterType(type) {
+    currentFilter = type;
+    // Update UI active state for filters
+    event.currentTarget.parentElement.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    render(masterList);
 }
 
-// Initial load sorted by Name
-window.onload = () => sortData('name');
+function sortData(criteria) {
+    let sorted = [...masterList];
+    
+    if (criteria === 'ram-desc') {
+        sorted.sort((a, b) => b.ram - a.ram);
+    } else if (criteria === 'ram-asc') {
+        sorted.sort((a, b) => a.ram - b.ram);
+    } else if (criteria === 'name') {
+        sorted.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    
+    // Update UI active state for sort buttons
+    event.currentTarget.parentElement.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    
+    render(sorted);
+}
+
+window.onload = () => render(masterList);
 </script>
 </body>
 </html>
