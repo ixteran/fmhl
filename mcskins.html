@@ -7,13 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #121212;
-            --card: #1e1e1e;
-            --input: #2a2a2a;
-            --accent: #00b894;
-            --danger: #d63031;
-            --text-main: #ecf0f1;
-            --text-muted: #95a5a6;
+            /* --- NEON BLUE THEME --- */
+            --bg: #0a0b10;          /* Deep Blue-Black */
+            --card: #13151b;        /* Slightly lighter blue-grey */
+            --input: #1e272e;
+            
+            --accent: #00a8ff;      /* Electric Blue (Brand Color) */
+            --accent-glow: #0097e6;
+            
+            --danger: #e84118;      /* Red for Taken */
+            --success: #4cd137;     /* Green for Available */
+            
+            --text-main: #f5f6fa;
+            --text-muted: #7f8fa6;
         }
 
         body {
@@ -29,12 +35,12 @@
 
         /* --- HEADER --- */
         header {
-            background: #191919;
+            background: #050507;
             padding: 20px 40px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid #1e272e;
         }
 
         .brand {
@@ -43,14 +49,25 @@
             color: var(--text-main);
             text-decoration: none;
             letter-spacing: -1px;
+            text-transform: uppercase;
         }
-        .brand span { color: var(--accent); }
+        .brand span { 
+            color: var(--accent); 
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.4);
+        }
 
         /* --- SEARCH HERO --- */
         .search-hero {
             text-align: center;
-            padding: 60px 20px;
-            background: radial-gradient(circle at center, #252525 0%, #121212 70%);
+            padding: 80px 20px;
+            /* Matches homepage gradient */
+            background: radial-gradient(circle at center, #1e272e 0%, #0a0b10 80%);
+            border-bottom: 1px solid #1e272e;
+        }
+
+        .search-hero h1 {
+            margin-bottom: 30px;
+            font-size: 2.5rem;
         }
 
         .search-box {
@@ -65,18 +82,18 @@
             padding-right: 60px;
             font-size: 1.2rem;
             border-radius: 50px;
-            border: 2px solid #333;
+            border: 2px solid #2f3640;
             background: var(--input);
             color: white;
             outline: none;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             transition: 0.3s;
-            box-sizing: border-box; /* Fix padding overflow */
+            box-sizing: border-box; 
         }
 
         .search-box input:focus {
             border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(0, 184, 148, 0.2);
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.3);
         }
 
         .search-btn {
@@ -90,14 +107,18 @@
             height: 45px;
             border-radius: 50%;
             cursor: pointer;
-            color: #000;
+            color: white;
             font-size: 1.1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: 0.2s;
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.4);
         }
-        .search-btn:hover { transform: translateY(-50%) scale(1.1); }
+        .search-btn:hover { 
+            transform: translateY(-50%) scale(1.1); 
+            background: var(--accent-glow);
+        }
 
         /* --- RESULTS GRID --- */
         .container {
@@ -117,10 +138,11 @@
         /* LEFT: SKIN PREVIEW */
         .skin-card {
             background: var(--card);
-            border-radius: 15px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 25px;
             text-align: center;
-            border: 1px solid #333;
+            border: 1px solid #2f3640;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .skin-render {
@@ -129,39 +151,46 @@
             height: auto;
             image-rendering: pixelated;
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+            margin-bottom: 20px;
         }
 
         .download-btn {
             display: block;
-            margin-top: 20px;
-            background: #2d3436;
-            color: white;
+            margin-top: 15px;
+            background: #2f3640;
+            color: var(--text-muted);
             text-decoration: none;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
-            transition: 0.2s;
+            transition: 0.3s;
+            border: 1px solid transparent;
         }
-        .download-btn:hover { background: #333; color: var(--accent); }
+        .download-btn:hover { 
+            background: rgba(0, 168, 255, 0.1); 
+            color: var(--accent); 
+            border-color: var(--accent);
+        }
 
         /* RIGHT: INFO */
         .info-card {
             background: var(--card);
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 35px;
+            border: 1px solid #2f3640;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
         .username-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #2f3640;
             padding-bottom: 20px;
         }
 
-        .username-header h1 { margin: 0; font-size: 2.5rem; }
+        .username-header h1 { margin: 0; font-size: 2.5rem; text-shadow: 0 0 20px rgba(0,0,0,0.5); }
         
         .status-badge {
             padding: 8px 16px;
@@ -169,18 +198,19 @@
             font-weight: bold;
             font-size: 0.9rem;
             text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .status-taken { background: rgba(214, 48, 49, 0.2); color: var(--danger); border: 1px solid var(--danger); }
-        .status-free { background: rgba(0, 184, 148, 0.2); color: var(--accent); border: 1px solid var(--accent); }
+        .status-taken { background: rgba(232, 65, 24, 0.1); color: var(--danger); border: 1px solid var(--danger); box-shadow: 0 0 10px rgba(232, 65, 24, 0.2); }
+        .status-free { background: rgba(76, 209, 55, 0.1); color: var(--success); border: 1px solid var(--success); box-shadow: 0 0 10px rgba(76, 209, 55, 0.2); }
 
         .data-row {
             display: flex;
             justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #2a2a2a;
+            padding: 18px 0;
+            border-bottom: 1px solid #2f3640;
         }
         .data-label { color: var(--text-muted); }
-        .data-value { font-family: 'Courier New', monospace; font-weight: bold; }
+        .data-value { font-family: 'Courier New', monospace; font-weight: bold; color: #fff; }
         
         .copy-icon {
             cursor: pointer;
@@ -188,13 +218,13 @@
             margin-left: 10px;
             transition: 0.2s;
         }
-        .copy-icon:hover { color: var(--accent); }
+        .copy-icon:hover { color: var(--accent); transform: scale(1.1); }
 
         /* LOADING & ERROR STATES */
         .state-msg {
             text-align: center;
             font-size: 1.2rem;
-            color: #888;
+            color: var(--text-muted);
             margin-top: 50px;
         }
         .error-msg { color: var(--danger); }
@@ -209,7 +239,7 @@
 <body>
 
 <header>
-    <a href="#" class="brand">NTRXI <span>SKINS</span></a>
+    <a href="index.html" class="brand">NTRXI <span>SKINS</span></a>
 </header>
 
 <section class="search-hero">
@@ -225,7 +255,7 @@
 <div class="container" id="resultContainer">
     <div class="profile-grid">
         <div class="skin-card">
-            <h3 style="color:#888; margin-top:0;">Current Skin</h3>
+            <h3 style="color: var(--text-muted); margin-top:0;">Current Skin</h3>
             <img id="skinImg" class="skin-render" src="" alt="Skin Render">
             
             <a id="downloadLink" href="#" class="download-btn" target="_blank" download>
@@ -266,7 +296,7 @@
             </div>
             
             <div class="data-row" style="border:none; padding-top: 20px;">
-                 <span class="data-label" style="font-size: 0.8rem;">* Availability is estimated. Banned names cannot be detected.</span>
+                 <span class="data-label" style="font-size: 0.8rem; color: #555;">* Availability is estimated. Banned names cannot be detected.</span>
             </div>
         </div>
     </div>
@@ -322,14 +352,14 @@ function showAvailable(name) {
 
     // Set Data
     document.getElementById('displayUsername').textContent = name;
-    document.getElementById('displayUsername').style.color = "#00b894";
+    document.getElementById('displayUsername').style.color = "var(--success)"; // Green for Available
     
     const badge = document.getElementById('statusBadge');
     badge.className = "status-badge status-free";
     badge.textContent = "Available";
 
     document.getElementById('availabilityText').textContent = "Likely Available";
-    document.getElementById('availabilityText').style.color = "#00b894";
+    document.getElementById('availabilityText').style.color = "var(--success)";
 
     document.getElementById('uuidDisplay').textContent = "N/A";
     document.getElementById('skinType').textContent = "N/A";
@@ -357,7 +387,7 @@ function showProfile(data) {
     badge.textContent = "Taken";
 
     document.getElementById('availabilityText').textContent = "Unavailable";
-    document.getElementById('availabilityText').style.color = "#d63031";
+    document.getElementById('availabilityText').style.color = "var(--danger)"; // Red for Taken
 
     document.getElementById('uuidDisplay').textContent = data.uuid;
     
@@ -367,8 +397,7 @@ function showProfile(data) {
     
     document.getElementById('skinType').textContent = isSlim ? "Slim (Alex)" : "Classic (Steve)";
     
-    // Use Visage API for high-quality 3D render (Front view)
-    // Fallback to Crafatar if slow
+    // Use Visage API for high-quality 3D render
     document.getElementById('skinImg').src = `https://visage.surgeplay.com/full/512/${data.uuid}`;
     
     // 3. Buttons
@@ -380,7 +409,7 @@ function showProfile(data) {
     nmLink.href = `https://namemc.com/profile/${data.uuid}`;
     nmLink.style.display = 'block';
 
-    // 4. Creation Date (Ashcon API sometimes provides created_at)
+    // 4. Creation Date
     if (data.created_at) {
         const date = new Date(data.created_at);
         document.getElementById('accountCreated').textContent = date.toLocaleDateString();
