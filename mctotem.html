@@ -5,95 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NTRXI - Skin Totem Tool</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --accent: #55efc4; --bg: #0f0f0f; --card: #1e1e1e; --text: #e0e0e0; --danger: #e17055; }
-        body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; min-height: 100vh; display: flex; flex-direction: column; }
+        :root {
+            /* --- NEON BLUE THEME --- */
+            --bg: #0a0b10;
+            --card: #13151b;
+            --input: #1e272e;
+            
+            --accent: #00a8ff;      /* Electric Blue */
+            --accent-glow: #0097e6;
+            --success: #4cd137;     /* Green for Download */
+            
+            --text-main: #f5f6fa;
+            --text-muted: #7f8fa6;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
         
         /* --- HEADER --- */
-        header { text-align: center; padding: 40px 20px; }
-        .ntrxi-brand { 
-            color: var(--accent); font-size: 3.5rem; font-weight: 900; margin: 0; 
-            letter-spacing: -2px; text-transform: uppercase;
+        header {
+            background: #050507;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e272e;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+        }
+        .brand span { 
+            color: var(--accent); 
+            text-shadow: 0 0 10px rgba(0, 168, 255, 0.4);
         }
         
         .discord-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            background-color: #5865F2; color: white; padding: 12px 30px;
-            border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.1rem;
-            transition: 0.3s; margin-top: 20px;
+            background: rgba(88, 101, 242, 0.1);
+            color: #5865F2;
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .discord-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4); }
+        .discord-btn:hover {
+            background: #5865F2;
+            color: white;
+            box-shadow: 0 0 15px rgba(88, 101, 242, 0.4);
+            transform: translateY(-2px);
+        }
 
-        /* --- TOOL --- */
-        .main-content { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        /* --- TOOL SECTION --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            /* Subtle background glow behind the card */
+            background: radial-gradient(circle at center, #1e272e 0%, #0a0b10 70%);
+        }
         
         .totem-tool-container {
-            background: #1e1e1e; border: 1px solid #333; border-radius: 20px; padding: 40px;
-            width: 100%; max-width: 480px; text-align: center; 
+            background: var(--card);
+            border: 1px solid #2f3640;
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
         }
         
-        .tool-header h2 { color: var(--accent); margin-top: 0; }
-        .tool-header p { color: #888; font-size: 0.9rem; margin-bottom: 30px; }
-
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        .input-group input {
-            background: #2a2a2a; border: 1px solid #444; color: white; padding: 12px; 
-            border-radius: 8px; outline: none; width: 100%; font-size: 1rem;
+        .tool-header h2 {
+            color: #fff;
+            margin-top: 0;
+            font-size: 2rem;
+            text-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
-        .input-group input:focus { border-color: var(--accent); }
+        
+        .tool-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .input-group input {
+            background: var(--input);
+            border: 2px solid #2f3640;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        
+        .input-group input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 168, 255, 0.2);
+        }
         
         .action-btn {
-            background: var(--accent); color: #000; border: none; padding: 0 25px; border-radius: 8px;
-            cursor: pointer; font-weight: bold; transition: 0.3s; white-space: nowrap;
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.3s;
+            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 168, 255, 0.3);
         }
-        .action-btn:hover { filter: brightness(1.1); }
+        
+        .action-btn:hover {
+            background: var(--accent-glow);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(0, 168, 255, 0.5);
+        }
 
-        .preview-area { 
-            margin-top: 30px; padding-top: 20px; border-top: 1px solid #333; 
-            display: flex; flex-direction: column; align-items: center;
+        .preview-area {
+            background: #050507;
+            border-radius: 15px;
+            border: 1px solid #2f3640;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
         canvas {
-            width: 128px; height: 128px; image-rendering: pixelated; 
-            border: 2px dashed #444; background: #252525; margin: 15px 0;
+            width: 128px;
+            height: 128px;
+            image-rendering: pixelated;
+            border: 2px dashed #444;
+            background: #1e272e;
+            margin: 10px 0 20px 0;
+            border-radius: 8px;
         }
         
         .download-btn {
-            background: var(--danger); color: white; border: none; padding: 15px; border-radius: 8px;
-            font-weight: bold; cursor: pointer; transition: 0.2s; width: 100%; font-size: 1rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            font-size: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 15px rgba(76, 209, 55, 0.3);
         }
-        .download-btn:hover { background: #ff7675; transform: translateY(-2px); }
-        .download-btn.disabled { opacity: 0.5; pointer-events: none; background: #636e72; }
         
-        #statusMsg { font-size: 0.9rem; margin-top: 15px; min-height: 20px; font-weight: 500; }
+        .download-btn:hover {
+            background: #44bd32;
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(76, 209, 55, 0.5);
+        }
+        
+        .download-btn.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+            background: #2f3640;
+            box-shadow: none;
+            color: #7f8fa6;
+        }
+        
+        #statusMsg {
+            font-size: 0.9rem;
+            margin-top: 20px;
+            min-height: 20px;
+            font-weight: 500;
+        }
         
         /* --- FOOTER --- */
-        footer { text-align: center; padding: 20px; color: #555; font-size: 0.8rem; border-top: 1px solid #1a1a1a; margin-top: 40px; }
+        footer {
+            background: #050507;
+            border-top: 1px solid #1e272e;
+            padding: 20px;
+            text-align: center;
+            color: #57606f;
+            font-size: 0.8rem;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <h1 class="ntrxi-brand">NTRXI</h1>
-    <a href="https://discord.com/invite/b67X2Gdkw7" target="_blank" class="discord-btn">Join Discord</a>
+    <a href="index.html" class="brand">NTRXI <span>Totems</span></a>
+    <a href="http://discord.gg/b67X2Gdkw7/" target="_blank" class="discord-btn">
+        <i class="fab fa-discord"></i> Join Discord
+    </a>
 </header>
 
 <div class="main-content">
     <div class="totem-tool-container">
         <div class="tool-header">
             <h2>Totem Converter</h2>
-            <p>Turn any player skin into a Resource Pack.</p>
+            <p>Turn any Minecraft skin into a custom Resource Pack.</p>
         </div>
 
         <div class="input-group">
             <input type="text" id="skinInput" placeholder="Enter Username..." onkeypress="handleEnter(event)">
-            <button class="action-btn" onclick="generateTotem()">Generate</button>
+            <button class="action-btn" onclick="generateTotem()">
+                <i class="fas fa-bolt"></i> Generate
+            </button>
         </div>
 
         <div class="preview-area">
+            <span style="color: #7f8fa6; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;">Preview</span>
             <canvas id="totemCanvas" width="16" height="16"></canvas>
-            <button id="downloadPackBtn" class="download-btn disabled" onclick="downloadPack()">Download Pack (.zip)</button>
+            
+            <button id="downloadPackBtn" class="download-btn disabled" onclick="downloadPack()">
+                <i class="fas fa-file-archive"></i> Download Pack (.zip)
+            </button>
         </div>
         
         <p id="statusMsg"></p>
@@ -101,7 +265,7 @@
 </div>
 
 <footer>
-    &copy; 2026 NTRXI Index.
+    &copy; 2026 NTRXI. All rights reserved. Not affiliated with Mojang AB.
 </footer>
 
 <script>
@@ -117,14 +281,14 @@ function generateTotem() {
     if (!username) return;
 
     status.textContent = "Fetching skin...";
-    status.style.color = "#aaa";
+    status.style.color = "#7f8fa6";
     dlBtn.classList.add('disabled');
     ctx.clearRect(0, 0, 16, 16);
 
     const img = new Image();
     img.crossOrigin = "Anonymous";
     
-    // CHANGED TO MC-HEADS (More reliable than Starlight)
+    // Using MC-Heads for reliable skin grabbing
     img.src = `https://mc-heads.net/skin/${username}`;
 
     img.onload = function() {
@@ -146,17 +310,17 @@ function generateTotem() {
         ctx.drawImage(img, 4, 20, 3, 2, 8, 14, 3, 2);
 
         status.textContent = "Ready to download!";
-        status.style.color = "#55efc4";
+        status.style.color = "var(--success)";
         dlBtn.classList.remove('disabled');
     };
 
     img.onerror = function() {
-        // Fallback to Minotar if MC-Heads fails
+        // Fallback
         console.log("MC-Heads failed, trying Minotar...");
         img.src = `https://minotar.net/skin/${username}`;
-        // If this second attempt fails, it will trigger another error event or just stop.
+        
         status.textContent = "Error: Invalid username or Skin API down.";
-        status.style.color = "#e17055";
+        status.style.color = "#e84118";
     };
 }
 
@@ -169,7 +333,7 @@ async function downloadPack() {
     
     const zip = new JSZip();
 
-    // Pack.mcmeta for 1.21
+    // Pack.mcmeta for Modern Versions
     const mcmeta = {
         "pack": {
             "pack_format": 34,
